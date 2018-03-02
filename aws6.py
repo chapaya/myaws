@@ -1,5 +1,5 @@
 import boto3
-
+# Stop instance
 # Region your instances are in, e.g. 'us-east-1'
 #region = 'XX-XXXXX-X'
 
