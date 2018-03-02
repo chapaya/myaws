@@ -9,3 +9,4 @@ for tags in ec2instance.tags:
     if tags["Key"] == 'Name':
         instancename = tags["Value"]
         print(instancename)
+        print(ec2instance.tags)
