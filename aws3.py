@@ -14,8 +14,11 @@ running_instances = ec2.instances.filter(Filters=[{
     'Name': 'instance-state-name',
     'Values': ['running']}])
 
-ec2info = defaultdict()
-for instance in running_instances:
+
+
+ec2_res.2info = defaultdict()
+
+ec2_res. instance in running_instances:
     for tag in instance.tags:
         if 'Name'in tag['Key']:
             name = tag['Value']
