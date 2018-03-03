@@ -5,7 +5,7 @@ ec2 = boto3.client('ec2')
 
 # Grab where backup retention is 14 days so we can reduce it to 7
 #instances = ec2.describe_instances(Filters=[{'Name': 'tag:Retention', 'Values': ['14']}])
-instances = ec2.describe_instances(Filters=[{'Name': 'tag:RI', 'Values': ['yes']}])
+instances = ec2.describe_instances(Filters=[{'Name': 'tag:RI', 'Values': ['yes']}]) # All instances that has tag RI=yes
 
 ids = []
 
@@ -21,7 +21,16 @@ ec2.create_tags(
     Tags=[
         {
             'Key': 'Retention',
-            'Value': '7'
+            'Value': '8'
+        }
+    ]
+)
+ec2.create_tags(
+    Resources=ids,
+    Tags=[
+        {
+            'Key': 'Requestedby',
+            'Value': 'Eran'
         }
     ]
 )
