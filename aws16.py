@@ -13,5 +13,6 @@ for r in response['Reservations']:
         tags = instance["Tags"]
         for i in tags:
             print(i)
+        print(instance["InstanceId"])
         print("-----------------------------------------------------")
 
