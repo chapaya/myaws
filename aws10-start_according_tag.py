@@ -16,6 +16,8 @@ for instance in instances:
 #ec2.start_instances(InstanceIds=instances)
 #print('Started your instances: ' + str(instances))
 
+
+
 filters = [{
     'Name': 'tag:Name',
     'Values': ['i-025a9d571f41dcfd2', 'i-025a9d571f41dcfd2']
