@@ -1,5 +1,6 @@
 import boto3
 # Script start all instances that has tag Owner=Archive and tag them with Expiration and RequestedBy
+# By Eran Grimberg 2018-03-03
 
 ec2 = boto3.client('ec2')
 
