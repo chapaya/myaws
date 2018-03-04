@@ -20,6 +20,7 @@ mytags = [{
     }]
 for reservation in reservations :
     for each_instance in reservation["Instances"]:
+        print(each_instance)
         ec2.create_tags(
             Resources = [each_instance["InstanceId"] ],
             Tags= mytags
