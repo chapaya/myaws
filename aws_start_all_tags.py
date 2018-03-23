@@ -5,7 +5,7 @@ import boto3
 ec2 = boto3.client('ec2')
 
 instances = ec2.describe_instances(Filters=[{'Name': 'tag:Owner', 'Values': ['archive']}]) # All instances that has tag owner=archive
-
+print(instances)
 ids = []
 
 for reservation in instances['Reservations']:
@@ -16,7 +16,7 @@ for reservation in instances['Reservations']:
 print(ids)
 
 #Start instances
-ec2.start_instances(InstanceIds=ids)
+#ec2.start_instances(InstanceIds=ids)
 print('Started your instances: ' + str(ids))
 
 ec2.create_tags(

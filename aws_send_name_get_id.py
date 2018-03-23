@@ -5,7 +5,7 @@ import boto3
 ec2client = boto3.client('ec2')
 tagkey='Name'
 tagvalue='chef555'
-response = ec2client.describe_instances(
+response = ec2client.describe_instances_status(
     Filters=[
         {
             'Name': 'tag:'+tagkey,
