@@ -28,7 +28,8 @@ response = ec2client.describe_instance_status()
 for row in response['InstanceStatuses']:
      #print(row['InstanceId'])
      in_id=row['InstanceId']
-     print(row['InstanceState'])
+     print(row['InstanceState']['Name']) # instance status !!
+     in_state=row['InstanceState']['Name']
      try:
          value = row['Events']
      except KeyError:
@@ -45,7 +46,7 @@ for row in response['InstanceStatuses']:
          with open('out.csv', 'a') as output:
              writer = csv.writer(output, lineterminator='\n')
              #writer.writerow([in_id])
-             line = [in_id,in_name]
+             line = [in_id,in_name,in_state]
              print(line)
              writer.writerow(line)
      else:
@@ -60,7 +61,7 @@ No event for i-0e77545e5a65a2182 server_name=Percona
  '"Status": "ok"}}')
 
 
-and out.csv with instance id and name 
+and out.csv with instance id and name and status
 '''
 
 

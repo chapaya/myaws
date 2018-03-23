@@ -28,7 +28,7 @@ response = ec2client.describe_instance_status()
 for row in response['InstanceStatuses']:
      #print(row['InstanceId'])
      in_id=row['InstanceId']
-     print(row['InstanceState'])
+     print(row['InstanceState']['Name'])
      try:
          value = row['Events']
      except KeyError:
