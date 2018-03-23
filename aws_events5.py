@@ -4,7 +4,7 @@ import boto3
 ec2 = boto3.resource('ec2')
 #fid='i-027a13c48bbd73fa3'
 def get_name(fid):
-    ec2instance = ec2.Instance(fid)
+    #ec2instance = ec2.Instance(fid)
     instancename = ''
     print(ec2instance)
     for tags in ec2instance.tags:

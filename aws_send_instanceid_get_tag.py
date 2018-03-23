@@ -6,7 +6,7 @@ fid='i-027a13c48bbd73fa3'
 ec2instance = ec2.Instance(fid)
 instancename = ''
 for tags in ec2instance.tags:
-    print(tags) # print all tags
+    #print(tags) # print all tags
     if tags["Key"] == 'Name':
         instancename = tags["Value"]
 print(instancename)
