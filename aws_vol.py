@@ -20,6 +20,11 @@ volumes = ec2.volumes.filter(Filters=[{'Name': 'status', 'Values': ['available']
 for v in volumes:
     #print(v.id) # all volumes
     print("This disk is avalible " + v.id)
+    # Delete the disk
+    #response = ec2cl.delete_volume(
+    #    VolumeId=v.id,
+    #)
+    #print(response)
 
     '''
     This disk is avalible vol-0efca32aee2ab7574
