@@ -16,3 +16,7 @@ for reservation in response['Reservations']:
 The instance id=i-xxxxx Monitoring status is disabled
 The instance id=i-xxxxx Monitoring status is disabled
 '''
+
+'''
+aws ec2 describe-instances --query "Reservations[].Instances[?Monitoring.State==`enabled`]"
+'''
