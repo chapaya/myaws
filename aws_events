@@ -1,0 +1,130 @@
+#check aws events
+import boto3
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+
+ec2resource = boto3.resource('ec2')
+ec2client = boto3.client('ec2')
+print("VA:")
+def get_name(fid):
+    ec2instance = ec2resource.Instance(fid)
+    instancename = ''
+    for tags in ec2instance.tags:
+        #print(tags) # print all tags
+        if tags["Key"] == 'Name':
+            instancename = tags["Value"]
+    return(instancename)
+
+response = ec2client.describe_instance_status()
+
+# Check events :
+for r in response['InstanceStatuses']:
+     try:
+         value = r['Events']
+         #print(value)
+     except KeyError:
+         #print(r['InstanceId'])
+         #print("No event for " + r['InstanceId'] + " server_name=" + get_name(fid=r['InstanceId']))
+         x=1
+     else:
+         print("There is event for " + r['InstanceId'] + " server_name=" + get_name(fid=r['InstanceId']) + ". Please Check!")
+         #print(r)
+         print(r['Events'][0]['Description'])
+         t0 = str(r['Events'][0]['Description'])
+         print(t0)
+         strchk = "[Completed]"
+         if strchk in t0:
+            print("There is event Completed for " + r['InstanceId'] + " server_name=" + get_name(fid=r['InstanceId']))
+         else:
+            print("no completed event !")
+            t1 = str(r['Events'][0]['NotBefore'])
+            t2 = t1.split('+')[0]
+            #print(t2)
+            t3 = str(r['Events'][0]['NotAfter'])
+            t4 = t3.split('+')[0]
+            #print(t4)
+            body =('\n' "There is event for instance id :  " + r['InstanceId'] + '\n' \
+                    '\n' "Server_name                             :  " + get_name(fid=r['InstanceId']) + '\n' \
+                    '\n' "Event code                                :  " + r['Events'][0]['Code'] + '\n' \
+                    '\n' "Event description                     :  " + r['Events'][0]['Description'] + '\n' \
+                    '\n' "Event between ( UTC Time )    : " + t2 + " To " + t4 +'\n' \
+                    '\n' "Please Check!")
+            # Mail setup
+            server = smtplib.SMTP('xxxxx')
+            fromaddr = "xxxx"
+            toaddr = "xxxxx"
+            #toaddr = "xxxx"
+            msg = MIMEMultipart('alternative')
+            msg['Subject'] = "AWS server maintenance alert - Pay Attention!"
+            msg['From'] = fromaddr
+            msg['To'] = toaddr
+            ##
+            msg.attach(MIMEText(body, 'plain'))
+            text = msg.as_string()
+            print(text)
+            server.sendmail(fromaddr, toaddr, text)
+            server.quit()
+
+#IR
+print("IR:")
+ec2clir = boto3.client('ec2', region_name='eu-west-1')
+ec2resir = boto3.resource('ec2', region_name='eu-west-1')
+
+def get_name(fid):
+    ec2instance = ec2resir.Instance(fid)
+    instancename = ''
+    for tags in ec2instance.tags:
+        #print(tags) # print all tags
+        if tags["Key"] == 'Name':
+            instancename = tags["Value"]
+    return(instancename)
+
+response = ec2clir.describe_instance_status()
+
+# Check events :
+for r in response['InstanceStatuses']:
+     try:
+         value = r['Events']
+     except KeyError:
+         #print(r['InstanceId'])
+         #print("No event for " + r['InstanceId'] + " server_name=" + get_name(fid=r['InstanceId']))
+         x=1
+     else:
+         print("There is event for " + r['InstanceId'] + " server_name=" + get_name(fid=r['InstanceId']) + ". Please Check!")
+         #print(r)
+         print(r['Events'][0]['Description'])
+         t0 = str(r['Events'][0]['Description'])
+         print(t0)
+         strchk = "[Completed]"
+         if strchk in t0:
+            print("There is event Completed for " + r['InstanceId'] + " server_name=" + get_name(fid=r['InstanceId']))
+         else:
+            print("no completed event !")
+            t1 = str(r['Events'][0]['NotBefore'])
+            t2 = t1.split('+')[0]
+            #print(t2)
+            t3 = str(r['Events'][0]['NotAfter'])
+            t4 = t3.split('+')[0]
+            #print(t4)
+            body =('\n' "There is event for instance id :  " + r['InstanceId'] + '\n' \
+                    '\n' "Server_name                             :  " + get_name(fid=r['InstanceId']) + '\n' \
+                    '\n' "Event code                                :  " + r['Events'][0]['Code'] + '\n' \
+                    '\n' "Event description                     :  " + r['Events'][0]['Description'] + '\n' \
+                    '\n' "Event between ( UTC Time )    : " + t2 + " To " + t4 +'\n' \
+                    '\n' "Please Check!")
+            # Mail setup
+            server = smtplib.SMTP('xxxxx')
+            fromaddr = "xxxxx"
+            toaddr = "xxxxx"
+            #toaddr = "xxxxx"
+            msg = MIMEMultipart('alternative')
+            msg['Subject'] = "AWS server maintenance alert - Pay Attention!"
+            msg['From'] = fromaddr
+            msg['To'] = toaddr
+            ##
+            msg.attach(MIMEText(body, 'plain'))
+            text = msg.as_string()
+            print(text)
+            server.sendmail(fromaddr, toaddr, text)
+            server.quit()
