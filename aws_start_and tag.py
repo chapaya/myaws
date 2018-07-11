@@ -1,5 +1,3 @@
-
-
 import boto3
 import sys
 # Script start all instances that has tag Purpose=KUKU in IR and tag them with Expiration and RequestedBy
