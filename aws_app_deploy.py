@@ -40,19 +40,19 @@ def app_deploy(appid):
     # Run chef-client on app
 
     # Wait for app to be OOS
-    while 1:
+    while True:
         res = elb.describe_instance_health(LoadBalancerName=lbname, Instances=[{'InstanceId': appid}, ])
-        app1stat = (res['InstanceStates'][0]['State'])
+        appstat = (res['InstanceStates'][0]['State'])
         print(appid + " - " + appname + " - " + appstat)
-        if app1stat in 'InService':
+        if appstat in 'InService':
             print(appid + " - " + appname + " is still up .. sleep 3 seconds ...")
             sleep(3)
         else:
             print(appid + " - " + appname + " is OOS ..")
             break
 
-    # Wait for app to be OOS
-    while 1:
+    # Wait for app to be InService
+    while True:
         res = elb.describe_instance_health(LoadBalancerName=lbname, Instances=[{'InstanceId': appid}, ])
         appstat = (res['InstanceStates'][0]['State'])
         print(appid + " - " + appstat)
