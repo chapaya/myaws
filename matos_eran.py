@@ -1,3 +1,6 @@
+'''
+[root@utils2 ~]# python matos.py US eranLB
+'''
 
 import boto3
 import os
@@ -5,20 +8,20 @@ from time import sleep
 import sys
 import logging
 
-# ENV = xxxDIR/xxxUS
+# ENV = IR/US
 env = sys.argv[1]
 # lbname = LB1/LB2/LB3
 lbname = sys.argv[2]
 identity_file = ''
 
-if env == 'PRODIR':
-    identity_file = '~/.ssh/xxxx-ir.pem'
+if env == 'IR':
+    identity_file = '~/.ssh/ir.pem'
     region = 'eu-west-1'
-elif env == 'PRODUS':
-    identity_file = '~/.ssh/xxxx-vir.pem'
+elif env == 'US':
+    identity_file = '~/myaws.pem'
     region = 'us-east-1'
 elif env == 'xxx':
-    identity_file = '~/.ssh/xxxx-vir.pem'
+    identity_file = '~/.ssh/vir.pem'
     region = 'us-east-1'
 
 ec2client = boto3.client('ec2', region_name=region)
@@ -100,7 +103,9 @@ def which_user(appid):
 
     #ami-0d139608ed218ae97 - emea centos
     #ami-783a2107 - US centos
-    if (ami == 'ami-0d139608ed218ae97') or (ami == 'ami-783a2107'):
+    #eran ami-9887c6e7
+    #if (ami == 'ami-0d139608ed218ae97') or (ami == 'ami-783a2107'):
+    if (ami == 'ami-9887c6e7'):
         user = 'centos'
     else:
         user = 'ec2-user'
@@ -114,7 +119,8 @@ def run_chef_client(appname,appid):
     """
     ssh_user = which_user(appid)
     print(ssh_user)
-    ssh = os.system("ssh -t -t -i %s -n -o StrictHostKeyChecking=no %s@%s 'sudo chef-client'" % (
+    #ssh = os.system("ssh -t -t -i %s -n -o StrictHostKeyChecking=no %s@%s 'sudo chef-client'" % (
+    ssh = os.system("ssh -t -t -i %s -n -o StrictHostKeyChecking=no %s@%s 'sudo service nginx stop'" % (
     identity_file, ssh_user, appname))
     print(ssh)
     print("run chef-client")
@@ -127,11 +133,13 @@ def main():
     print("ELB status : " + lbname)
     list = get_app_list(lbname)
     print(list)
+    sleep(5)
     for appid in list:
         appname = get_name(appid)
         print(appid + " - " + appname + " Starting ... !")
         print(appid + " - " + get_name(appid) + " - " + get_app_status(appid))
         while True:
+            sleep(3)
             if is_lb_min2(lbname):
                 logging.info('Run chef_client')
                 logging.info(appname)
@@ -150,12 +158,26 @@ def main():
                     else:
                         print(appid + " - " + appname + " is OutOfService.. Continue to next app")
                         logging.info('Continue to next app')
+                        sleep(3)
                         break
             else:
                 print("There are 2 active servers in LB .. going to sleep 5 seconds ...")
                 sleep(5)
+                while True: # wait till is_lb_min2(lbname) is true
+                    if not is_lb_min2(lbname) :
+                        print("is lb min 2 is false ...sleep 3..")
+                        sleep(3)
+                    else:
+                        print("There are 3 apps in service .. continue..")
+                        print("Running chef-client on " + appname)
+                        run_chef_client(appname, appid)
+                        print("chef-client run on " + appname)
+                        sleep(10)
+                        break
+            break
 
     logging.info('Program ended !')
+    print('Program ended !')
 
 
 
